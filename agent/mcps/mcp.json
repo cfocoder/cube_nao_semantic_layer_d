@@ -1,12 +1,8 @@
 {
   "mcpServers": {
     "cube_semantic": {
-      "command": "node",
-      "args": ["/app/context/agent/mcps/cube_server.mjs"],
-      "env": {
-        "CUBE_API_URL": "${CUBE_API_URL}",
-        "CUBE_API_SECRET": "${CUBE_API_SECRET}"
-      },
+      "transport": "streamable-http",
+      "url": "http://cube-mcp-private:8787/mcp",
       "disabled": false,
       "autoApprove": [],
       "disabledTools": []
