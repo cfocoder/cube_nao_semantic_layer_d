@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "cube_semantic": {
+      "command": "node",
+      "args": ["/app/context/agent/mcps/cube_server.mjs"],
+      "env": {
+        "CUBE_API_URL": "${CUBE_API_URL}",
+        "CUBE_API_SECRET": "${CUBE_API_SECRET}"
+      },
+      "disabled": false,
+      "autoApprove": [],
+      "disabledTools": []
+    }
+  }
+}

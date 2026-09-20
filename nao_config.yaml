@@ -1,0 +1,23 @@
+# Formal scenario D: Cube MCP plus a Nao Context Layer business skill.
+# No native PostgreSQL connection is allowed in this project.
+project_name: tesis-condition-d
+llm:
+  providers:
+    - provider: openai
+      api_key: "{{ env('OPENAI_API_KEY') }}"
+      base_url: "{{ env('OPENAI_BASE_URL') }}"
+      models:
+        - id: gpt-4.1-mini
+          name: OpenAI - GPT-4.1 mini
+          default: true
+        - id: gpt-4.1
+          name: OpenAI - GPT-4.1
+
+    - provider: openrouter
+      api_key: "{{ env('OPENROUTER_API_KEY') }}"
+      base_url: "{{ env('OPENROUTER_BASE_URL') }}"
+      models:
+        - id: openai/gpt-4.1-mini
+          name: OpenRouter - GPT-4.1 mini
+        - id: google/gemini-2.5-flash
+          name: OpenRouter - Gemini 2.5 Flash

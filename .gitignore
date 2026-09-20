@@ -1,0 +1,11 @@
+# Local/runtime files — never commit secrets or generated state
+.env
+.env.*
+!.env.example
+*.secret
+*.pem
+*.key
+secrets/
+logs/
+__pycache__/
+node_modules/
