@@ -13,3 +13,6 @@ This project tests Cube Core combined with business context in Nao's Context Lay
 7. Do not put the `0.25` policy, an equivalent metric, or business-policy documentation into Cube configuration or metadata.
 8. If Cube cannot provide the required observed values, say so instead of guessing.
 9. Report the semantic route, policy application, denominator, and unchanged numerator in the answer.
+
+## First-turn response requirement
+Always answer the user's question in the current response and provide every requested field; if data is unavailable, state that explicitly without inventing values or deferring the answer to a follow-up.
