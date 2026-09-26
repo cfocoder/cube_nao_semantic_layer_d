@@ -10,18 +10,10 @@ llm:
         - id: gpt-6-luna
           name: OpenAI - GPT-6 Luna
           default: true
-        - id: gpt-4.1-mini
-          name: OpenAI - GPT-4.1 mini
-        - id: gpt-4.1
-          name: OpenAI - GPT-4.1
 
     - provider: openrouter
-      api_key: "{{ env('OPENROUTER_API_KEY') }}"
-      base_url: "{{ env('OPENROUTER_BASE_URL') }}"
+      api_key: "{{ env('DEEPSEEK_API_KEY') }}"
+      base_url: "https://api.deepseek.com"
       models:
-        - id: google/gemini-3.8-flash
-          name: OpenRouter - Gemini 3.8 Flash
-        - id: openai/gpt-4.1-mini
-          name: OpenRouter - GPT-4.1 mini
-        - id: google/gemini-2.5-flash
-          name: OpenRouter - Gemini 2.5 Flash
+        - id: deepseek-flash
+          name: DeepSeek Flash
