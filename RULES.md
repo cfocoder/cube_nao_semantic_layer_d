@@ -10,7 +10,7 @@ This project tests Cube Core combined with business context in Nao's Context Lay
 4. Retrieve and follow `agent/skills/contoso-business-days/SKILL.md` when a metric is expressed per effective business day.
 5. Apply `effective_business_days = weekdays + (weekend_days × 0.25)` only to the denominator of those metrics; never change observed sales, revenue, expense, or cost amounts.
 6. For customer lifecycle questions that explicitly ask for recency-based `Active`, `At Risk`, and `Churned` segments (including the original benchmark's Q036 and Q089), apply the D-only policy below. Do not reinterpret unrelated wording such as a generic “customer segment” as recency.
-7. If Cube cannot provide the observed customer purchase dates or other required values, report the limitation instead of guessing or falling back to direct SQL.
+7. If Cube cannot provide the observed customer purchase dates or other required values, report the limitation instead of guessing or falling back to direct SQL. For recency aggregates, issue filtered `cube_query` calls sequentially, never in parallel. Treat `Continue wait`, `isError: true`, or a response without a populated `data` array as pending/not a result; wait and retry only the identical query, and if it still does not return data, report the limitation. Never fill a missing segment value from memory, inference, or another route.
 8. Keep both business policies in D's Nao Context Layer only; do not encode the weekend factor or customer-recency thresholds in the database, Cube configuration, or Cube metadata.
 9. Report the semantic route, the applicable policy, its cutoff/denominator, and unchanged observed amounts in the answer.
 
