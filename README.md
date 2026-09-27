@@ -10,6 +10,7 @@ This repository is the Nao Multi-project context for formal scenario **D**.
 - The Contoso business skill is available in Nao's Context Layer.
 - The skill defines `effective_business_days = weekdays + (weekend_days × 0.25)`.
 - Monthly revenue, expense, cost, and other observed amounts are not modified; only the denominator for per-effective-business-day metrics changes.
+- Q036/Q089 recency policy is specific to the benchmark's `FactOnlineSales` source: online-channel purchase dates and sales/product facts only, not all-channel customer history. The fixed D cutoff and 90/180-day thresholds stay in `RULES.md`; Cube contains only neutral observed members/measures.
 - `direct_postgres` must not be present or usable in this project.
 
 ## Project mapping

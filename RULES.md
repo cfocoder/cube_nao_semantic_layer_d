@@ -16,15 +16,16 @@ This project tests Cube Core combined with business context in Nao's Context Lay
 
 ## D-only customer recency policy
 
-The cutoff and thresholds are context-only and are not stored in the physical dataset or Cube configuration; purchase dates remain observed data. This rule does not change the original question wording and applies only when a question asks for customer lifecycle classification by last-purchase recency.
+The cutoff and thresholds below are context-only and are not stored in the physical dataset, Cube model, or Cube configuration. Purchase dates, sales amounts, and product keys remain observed data. The Cube model exposes neutral online-sales measures; it does not assign lifecycle segments or store these thresholds. This rule does not change the original question wording and applies only when a question explicitly asks for customer lifecycle classification by last-purchase recency (Q036 and Q089 in this benchmark).
 
-- Use `2009-12-31` as the fixed as-of date for this Contoso benchmark.
-- Obtain each customer's latest purchase date on or before that date through the all-channel path exposed by Cube. Do not combine an all-channel source with a duplicate channel-specific source; do not use direct SQL.
-- Compute elapsed **calendar days** from the latest purchase date to the as-of date.
-- Classify `0–90` days as `Active`, `91–180` days as `At Risk`, and `more than 180 days` as `Churned`. Customers with no purchase on or before the as-of date are `Churned` under this test policy.
-- For Q089, use the same classification for segment grouping; obtain spend and distinct-product variety from Cube without adjusting observed amounts.
-- The original gold remains unchanged. Keep a separate D-condition reference result for the affected original questions (Q036 and Q089), and score whether D followed this policy separately from the source benchmark's original semantics.
-- If Cube metadata/data cannot provide the necessary per-customer purchase date, say that the classification cannot be verified; never invent dates or thresholds.
+- Q036 and Q089 use the benchmark's `FactOnlineSales` source, so this policy is explicitly **online-sales recency**, not all-channel customer recency. Do not describe it as all-channel, and do not combine `FactOnlineSales` with `FactSales` (which has no customer key and would risk duplicating online sales).
+- Use `2009-12-31` as the fixed as-of date for this Contoso benchmark; include transactions dated on or before that date.
+- Obtain each customer's latest online purchase date from `FactOnlineSales` through `cube_semantic` (`cube_metadata`/`cube_query`) using the neutral `latestOnlinePurchaseDate` measure at customer grain. Use the same online-sales fact for spend and product variety.
+- Compute elapsed **calendar days** from the latest online purchase date to the as-of date.
+- Classify `0–90` days as `Active`, `91–180` days as `At Risk`, and `more than 180` days as `Churned`. A customer with no qualifying online purchase is `Churned` under this D-only policy; report the customer cohort and do not silently drop such customers.
+- For Q089, calculate each customer's online spend using the observed sales-amount sum and product variety using distinct product keys; then report average customer spend and average distinct products by D segment. Do not average transaction amounts or adjust observed amounts.
+- Keep the original gold unchanged. Store separate D-policy references for Q036 and Q089 and score policy compliance separately from source-benchmark accuracy. Record explicitly that D's customer analysis is online-only.
+- If Cube cannot provide the required customer/date/measure result through the semantic route, report the limitation instead of guessing or falling back to direct SQL.
 
 ## First-turn response requirement
 Always answer the user's question in the current response and provide every requested field; if data is unavailable, state that explicitly without inventing values or deferring the answer to a follow-up.
