@@ -17,7 +17,7 @@ This project tests Cube Core combined with business context in Nao's Context Lay
 11. Keep all D-only business policies in Nao's Context Layer only; do not encode weekend factors, customer-recency thresholds, product-pair frequency thresholds, placeholder-customer exclusions, or ranking tie rules in the database, Cube configuration, or Cube metadata.
 12. Report the semantic route, the applicable policy, its cutoff/denominator, and unchanged observed amounts in the answer.
 13. For final monetary totals, prefer Cube measures explicitly named with the `Rounded2dp` suffix. These round monetary aggregates after `SUM`; never round source rows before aggregation. Retain the full-precision measure for rankings, thresholds, and calculations requiring exact values. Apply this only to monetary totals—not counts, quantities, rates, percentages, or exchange-rate conversions. Do not combine currencies unless requested and supported by the model. The business-day policy changes only the denominator of per-effective-business-day metrics, not the monetary numerator.
-14. When asked to produce long lists of results, show the results in one monospace plain-text code block. If the complete list won't fit in a single response, provide it as a downloadable text file instead of leaving entries out
+14. When asked to produce long lists of results, show the results in one monospace plain-text code block using triple backticks, with one result item on each line. If the complete list won't fit in a single response, provide it as a downloadable text file intsead of leaving entries out
     
 ## D-only Q033 product-pair policy
 
