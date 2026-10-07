@@ -4,7 +4,7 @@ This project tests Cube Core combined with business context in Nao's Context Lay
 
 ## Required behavior
 
-1. Use only `cube_semantic` for data access, specifically `cube_metadata` and `cube_query`. `decimal_calculator.calculate` is separately permitted only for arithmetic as specified below; it is not another data-access route.
+1. Use only the configured `cube_semantic` MCP for data access. Use `mcp_call` with `server: "cube_semantic"` and tool `cube_metadata` or `cube_query`. If the needed tools are not discoverable or Nao reports them unavailable, use `mcp_connect` with `server: "cube_semantic"` to discover them, then call them through `mcp_call`. Never use Nao's native `execute_sql`, direct PostgreSQL, or another route for data access. If Cube remains unavailable, report the route failure without falling back. `decimal_calculator.calculate` is separately permitted only for arithmetic as specified below; it is not another data-access route.
 2. Do not use direct PostgreSQL, SQL against the source database, or another data-access connection.
 3. Use only measures and dimensions returned by Cube metadata for observed data.
 4. Retrieve and follow `agent/skills/contoso-business-days/SKILL.md` when a metric is expressed per effective business day.
