@@ -4,8 +4,8 @@ This project tests Cube Core combined with business context in Nao's Context Lay
 
 ## Required behavior
 
-1. Use only `cube_semantic`, specifically `cube_metadata` and `cube_query`.
-2. Do not use direct PostgreSQL, SQL against the source database, or another connection.
+1. Use only `cube_semantic` for data access, specifically `cube_metadata` and `cube_query`. `decimal_calculator.calculate` is separately permitted only for arithmetic as specified below; it is not another data-access route.
+2. Do not use direct PostgreSQL, SQL against the source database, or another data-access connection.
 3. Use only measures and dimensions returned by Cube metadata for observed data.
 4. Retrieve and follow `agent/skills/contoso-business-days/SKILL.md` when a metric is expressed per effective business day.
 5. Apply `effective_business_days = weekdays + (weekend_days × 0.25)` only to the denominator of those metrics; never change observed sales, revenue, expense, or cost amounts.
@@ -19,9 +19,23 @@ This project tests Cube Core combined with business context in Nao's Context Lay
 13. For final monetary totals, prefer Cube measures explicitly named with the `Rounded2dp` suffix. These round monetary aggregates after `SUM`; never round source rows before aggregation. Retain the full-precision measure for rankings, thresholds, and calculations requiring exact values. Apply this only to monetary totals—not counts, quantities, rates, percentages, or exchange-rate conversions. Do not combine currencies unless requested and supported by the model. The business-day policy changes only the denominator of per-effective-business-day metrics, not the monetary numerator.
 14. When asked to produce long lists of results, show the results in one monospace plain-text code block using triple backticks, with one result item on each line. If the complete list won't fit in a single response, provide it as a downloadable text file intsead of leaving entries out
     
+## Required arithmetic: `decimal_calculator.calculate`
+
+For every user-facing result that requires arithmetic over observed or explicitly provided numeric inputs, you **MUST** call the shared MCP `decimal_calculator.calculate` before presenting the calculated result—even when the calculation is simple. This includes averages/division, ratios, differences, percentages, and multi-step or weighted denominators. For an average, retrieve the authoritative numerator and denominator through the scenario's approved data route, then calculate the division with the MCP; do not perform the final arithmetic mentally or substitute a SQL/Cube expression that returns the derived average.
+
+Keep data semantics separate from arithmetic:
+
+- Use only this project's approved data route, specified above, to select, filter, and aggregate source rows and retrieve observed totals/counts. Do not send raw table rows to the calculator for database aggregation.
+- Apply only business rules defined by this project's `RULES.md` or a skill explicitly referenced by it before forming the arithmetic expression. The calculator does not retrieve data, select filters, infer missing values, or decide business rules.
+- Pass an explicit expression using the exact numeric inputs returned by the data tool, without currency symbols or thousands separators; use only `+`, `-`, `*`, `/`, `^`, and parentheses. Prefer one expression with parentheses for a multi-step result so the trace records the full formula.
+- Use the calculator's returned value; do not round intermediate inputs. Round only the final displayed value to the requested precision, and follow any existing source-total rounding rule for source aggregates.
+- If the MCP call fails or is unavailable, do not silently fall back to mental/model arithmetic or a SQL/Cube-derived substitute. Preserve the observed inputs, state that the derived result could not be verified, and retry only the identical expression if the failure is transient.
+
+Example: for an ordinary weekday average, pass the actual observed amount and day count as a plain expression such as `12345.67 / 22`. For weighted denominators, encode only the factor and formula explicitly defined for that scenario; never introduce a policy from another scenario.
+
 ## D-only Q033 product-pair policy
 
-Interpret “most frequently purchased together in the same order” as the number of **distinct online sales orders** containing both products. Use `OnlineProductPairs.distinctOrdersWithPair`, group by `OnlineProductPairs.product1name` and `OnlineProductPairs.product2name`, filter to frequency **greater than 3**, order descending by the measure, and return the top 20. Use only `cube_semantic` (`cube_metadata`/`cube_query`) and fields present in live Cube metadata. Do not use `OnlineProductPairs.sourceRowPairCount` for this D-policy answer; that separate measure reproduces the frozen source SQL's row-pair count and is reserved for source-faithful baseline scoring. This D-only interpretation applies to Q033 and must be scored as policy compliance separately from the unchanged original gold; do not rewrite the prompt, source SQL, or shared Cube model to encode the threshold.
+Interpret “most frequently purchased together in the same order” as the number of **distinct online sales orders** containing both products. Use `OnlineProductPairs.distinctOrdersWithPair`, group by `OnlineProductPairs.product1name` and `OnlineProductPairs.product2name`, filter to frequency **greater than 3**, order descending by the measure, and return the top 20. Use `cube_semantic` (`cube_metadata`/`cube_query`) as the only data-access route and use fields present in live Cube metadata; follow the Required arithmetic section above for any arithmetic result. Do not use `OnlineProductPairs.sourceRowPairCount` for this D-policy answer; that separate measure reproduces the frozen source SQL's row-pair count and is reserved for source-faithful baseline scoring. This D-only interpretation applies to Q033 and must be scored as policy compliance separately from the unchanged original gold; do not rewrite the prompt, source SQL, or shared Cube model to encode the threshold.
 
 ## D-only Q088 tie-inclusive top-20 policy
 
