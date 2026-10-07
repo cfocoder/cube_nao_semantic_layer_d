@@ -35,7 +35,7 @@ amount_per_effective_business_day = monthly_amount / effective_business_days
 
 ## Tool boundary
 
-Use only `cube_metadata` and `cube_query` from the `cube_semantic` MCP. Do not use `direct_postgres` or free SQL.
+Use `cube_metadata` and `cube_query` from `cube_semantic` as the only data-access tools. Use the shared `decimal_calculator.calculate` MCP only for exact arithmetic over values already obtained through Cube. Do not use `direct_postgres` or free SQL.
 
 ## Explanation requirement
 

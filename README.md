@@ -5,8 +5,8 @@ This repository is the Nao Multi-project context for formal scenario **D**.
 ## Boundary
 
 - No native PostgreSQL database is declared.
-- Cube Core is accessed only through the `cube_semantic` MCP.
-- Available MCP tools are `cube_metadata` and `cube_query`.
+- Analytic data is accessed only through the `cube_semantic` MCP; `decimal_calculator` has no data access.
+- Cube tools are `cube_metadata` and `cube_query`; the shared `decimal_calculator.calculate` tool is only for exact arithmetic over retrieved values.
 - The Contoso business skill is available in Nao's Context Layer.
 - The skill defines `effective_business_days = weekdays + (weekend_days × 0.25)`.
 - Monthly revenue, expense, cost, and other observed amounts are not modified; only the denominator for per-effective-business-day metrics changes.
